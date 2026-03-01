@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --app-bg: #070b14;
+  --app-surface: #111827;
+  --app-nav-bg: rgba(7, 11, 20, 0.75);
+  --app-soft: rgba(255, 255, 255, 0.06);
+  --app-soft-hover: rgba(255, 255, 255, 0.12);
+  --app-text: #f8fafc;
+  --app-muted: #9ca3af;
+  --app-border: rgba(255, 255, 255, 0.12);
+  --app-text-300: #cbd5e1;
+  --app-text-400: #94a3b8;
+  --app-text-500: #64748b;
+  --app-select-bg: rgba(255, 255, 255, 0.04);
+  --app-select-bg-hover: rgba(255, 255, 255, 0.08);
+  --app-select-border: rgba(255, 255, 255, 0.14);
+  --app-select-option-bg: #0f172a;
+  --app-select-option-text: #e2e8f0;
+}
+
+:root.light {
+  --app-bg: #f4f7fb;
+  --app-surface: #ffffff;
+  --app-nav-bg: rgba(255, 255, 255, 0.84);
+  --app-soft: rgba(15, 23, 42, 0.06);
+  --app-soft-hover: rgba(15, 23, 42, 0.12);
+  --app-text: #0f172a;
+  --app-muted: #475569;
+  --app-border: rgba(15, 23, 42, 0.18);
+  --app-text-300: #334155;
+  --app-text-400: #475569;
+  --app-text-500: #64748b;
+  --app-select-bg: rgba(15, 23, 42, 0.04);
+  --app-select-bg-hover: rgba(15, 23, 42, 0.08);
+  --app-select-border: rgba(15, 23, 42, 0.18);
+  --app-select-option-bg: #f8fafc;
+  --app-select-option-text: #0f172a;
+}
+
+:root.dark {
+  --app-text-300: #cbd5e1;
+  --app-text-400: #94a3b8;
+  --app-text-500: #64748b;
+  --app-select-bg: rgba(255, 255, 255, 0.04);
+  --app-select-bg-hover: rgba(255, 255, 255, 0.08);
+  --app-select-border: rgba(255, 255, 255, 0.14);
+  --app-select-option-bg: #0f172a;
+  --app-select-option-text: #e2e8f0;
+}
+
+/* Base Styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--app-bg);
+    color: var(--app-text);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overscroll-behavior-y: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+}
+
+/* Components */
+@layer components {
+  /* Kartu Efek Kaca Transparan */
+  .glass-card {
+    background: var(--app-soft);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--app-border);
+    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.2);
+  }
+
+  /* Teks Gradasi Ungu-Pink */
+  .gradient-text {
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+
+  /* Pembatas baris teks agar rapi */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+:root.light .bg-black {
+  background-color: var(--app-bg) !important;
+}
+
+:root.light .bg-\[\#050505\],
+:root.light .bg-\[\#0f0f0f\],
+:root.light .bg-\[\#111\],
+:root.light .bg-\[\#151515\],
+:root.light .bg-\[\#1a1a1a\] {
+  background-color: var(--app-surface) !important;
+}
+
+:root.light .text-white {
+  color: var(--app-text) !important;
+}
+
+:root.dark .text-white {
+  color: var(--app-text) !important;
+}
+
+:root.light .text-gray-300 {
+  color: var(--app-text-300) !important;
+}
+
+:root.dark .text-gray-300 {
+  color: var(--app-text-300) !important;
+}
+
+:root.light .text-gray-400 {
+  color: var(--app-text-400) !important;
+}
+
+:root.dark .text-gray-400 {
+  color: var(--app-text-400) !important;
+}
+
+:root.light .text-gray-500 {
+  color: var(--app-text-500) !important;
+}
+
+:root.dark .text-gray-500 {
+  color: var(--app-text-500) !important;
+}
+
+:root.light .border-white\/5 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+:root.light .border-white\/10 {
+  border-color: rgba(15, 23, 42, 0.16) !important;
+}
+
+:root.light .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+:root.light .bg-white\/10 {
+  background-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+:root.light .hover\:bg-white\/5:hover {
+  background-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+:root.light .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.12) !important;
+}
+
+:root.light .theme-toggle-btn {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.18);
+  color: #334155;
+}
+
+:root.dark .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #e2e8f0;
+}
+
+.public-filter-select {
+  background: var(--app-select-bg);
+  border: 1px solid var(--app-select-border);
+  color: var(--app-text);
+}
+
+.public-filter-select:hover {
+  background: var(--app-select-bg-hover);
+}
+
+.public-filter-select:focus {
+  border-color: #a855f7;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2);
+}
+
+.public-filter-select option,
+.public-filter-option {
+  background: var(--app-select-option-bg);
+  color: var(--app-select-option-text);
+}
+
+/* Animations & Utilities */
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+  }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.16);
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.36);
+    border-radius: 5px;
+    border: 2px solid transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(168, 85, 247, 0.5);
+  }
+}
