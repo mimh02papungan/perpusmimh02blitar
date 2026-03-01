@@ -1,0 +1,16 @@
+{
+  "name": "PERPUS MI MH 02",
+  "short_name": "PERPUS MI MH 02",
+  "description": "Perpus MI Miftahul Huda 02 Papungan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
