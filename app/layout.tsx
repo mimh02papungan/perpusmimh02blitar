@@ -90,7 +90,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       applicationName: institutionName,
       keywords,
-      manifest: '/manifest.webmanifest',
+      manifest: '/manifest.json',
       metadataBase,
       alternates: canonical ? { canonical } : undefined,
       openGraph: {
@@ -115,7 +115,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: DEFAULT_TITLE,
       description: DEFAULT_DESCRIPTION,
-      manifest: '/manifest.webmanifest',
+      manifest: '/manifest.json',
       metadataBase: parseUrl(FALLBACK_SITE_URL),
       icons: {
         icon: '/favicon.ico',
