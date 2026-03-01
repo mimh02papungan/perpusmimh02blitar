@@ -2,13 +2,8 @@
 User-agent: *
 Allow: /
 
-# *
-User-agent: *
-Disallow: /admin
-Disallow: /api
-
 # Host
-Host: https://perpusmipadablitar.vercel.app
+Host: https://perpusmipada.vercel.app
 
 # Sitemaps
 Sitemap: https://perpusmipada.vercel.app/sitemap.xml
