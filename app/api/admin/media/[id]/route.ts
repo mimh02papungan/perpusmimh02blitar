@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdminSession } from '@/lib/auth';
 import { mapMediaWithStorageUrls } from '@/lib/mappers';
-import { Prisma } from '@prisma/client';
 import { cleanupStorageObjectIfUnused } from '@/lib/storageObjects';
 import { buildStorageObjectAccessPath } from '@/lib/r2';
 import { notifyPinnedMedia } from '@/lib/webPush';
@@ -68,7 +67,7 @@ export async function PUT(
             return NextResponse.json({ success: false, error: 'Media not found' }, { status: 404 });
         }
 
-        const data: Prisma.learning_mediaUncheckedUpdateInput = { updated_at: new Date() };
+        const data: Record<string, unknown> = { updated_at: new Date() };
         if (json.title !== undefined) data.title = String(json.title || '').trim();
         if (json.description !== undefined) data.description = json.description ? String(json.description) : null;
         if (json.category_id !== undefined) data.category_id = Number(json.category_id);
@@ -128,9 +127,10 @@ export async function PUT(
         }
 
         if (json.file_object_id !== undefined) {
-            data.file_object_id = parseBigIntOrNull(json.file_object_id);
-            if (data.file_object_id) {
-                data.file_url = buildStorageObjectAccessPath(data.file_object_id);
+            const nextFileObjectId = parseBigIntOrNull(json.file_object_id);
+            data.file_object_id = nextFileObjectId;
+            if (nextFileObjectId) {
+                data.file_url = buildStorageObjectAccessPath(nextFileObjectId);
             }
 
             if (
@@ -139,9 +139,9 @@ export async function PUT(
                 existing.thumbnail_object_id &&
                 existing.file_object_id === existing.thumbnail_object_id
             ) {
-                data.thumbnail_object_id = data.file_object_id;
-                if (data.file_object_id) {
-                    data.thumbnail_url = buildStorageObjectAccessPath(data.file_object_id);
+                data.thumbnail_object_id = nextFileObjectId;
+                if (nextFileObjectId) {
+                    data.thumbnail_url = buildStorageObjectAccessPath(nextFileObjectId);
                 }
             }
         }
@@ -168,9 +168,10 @@ export async function PUT(
         }
 
         if (json.thumbnail_object_id !== undefined) {
-            data.thumbnail_object_id = parseBigIntOrNull(json.thumbnail_object_id);
-            if (data.thumbnail_object_id) {
-                data.thumbnail_url = buildStorageObjectAccessPath(data.thumbnail_object_id);
+            const nextThumbnailObjectId = parseBigIntOrNull(json.thumbnail_object_id);
+            data.thumbnail_object_id = nextThumbnailObjectId;
+            if (nextThumbnailObjectId) {
+                data.thumbnail_url = buildStorageObjectAccessPath(nextThumbnailObjectId);
             }
         }
 
@@ -198,7 +199,7 @@ export async function PUT(
 
         const updated = await prisma.learning_media.update({
             where: { id: mediaId },
-            data,
+            data: data as never,
             include: {
                 categories: { select: { id: true, name: true } },
                 media_types: { select: { id: true, name: true, icon: true } },

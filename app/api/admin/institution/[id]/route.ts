@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdminSession } from '@/lib/auth';
 import { mapInstitutionWithStorageUrls } from '@/lib/mappers';
-import { Prisma } from '@prisma/client';
 import { cleanupStorageObjectIfUnused } from '@/lib/storageObjects';
 
 function parseBigIntOrNull(value: unknown): bigint | null {
@@ -43,7 +42,7 @@ export async function PUT(
             return NextResponse.json({ success: false, error: 'Institution not found' }, { status: 404 });
         }
 
-        const updates: Prisma.institutionsUncheckedUpdateInput = {
+        const updates: Record<string, unknown> = {
             name,
             description: json?.description ? String(json.description) : null,
             seo_description: json?.seo_description ? String(json.seo_description) : null,
@@ -74,7 +73,7 @@ export async function PUT(
 
         const data = await prisma.institutions.update({
             where: { id },
-            data: updates,
+            data: updates as never,
             include: {
                 logo_object: { select: { bucket: true, object_key: true } },
                 favicon_object: { select: { bucket: true, object_key: true } },
