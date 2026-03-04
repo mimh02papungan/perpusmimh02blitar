@@ -94,7 +94,7 @@ export default function ContactPage() {
               {institution?.name || 'MI Miftahul Huda 02 Papungan'}
             </h1>
             
-            <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl">
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl md:text-justify">
               {institution?.description ||
                 'Sekolah dasar Islam yang berkomitmen untuk pendidikan berkualitas dan pengembangan karakter siswa.'}
             </p>
@@ -149,7 +149,7 @@ function SocialLinkItem({
       rel="noopener noreferrer"
       className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-purple-500/50 transition-all duration-300 group"
     >
-      <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-all">
+      <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-[var(--app-accent)] group-hover:bg-purple-500 group-hover:text-slate-50 transition-all">
         <IconComponent size={20} />
       </div>
       <div className="min-w-0">

@@ -78,7 +78,7 @@ export default async function HomePage() {
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                    <span className="text-4xl font-bold text-white">M</span>
+                    <span className="text-4xl font-bold text-slate-50">M</span>
                   </div>
                 )}
               </div>
@@ -181,7 +181,7 @@ function MediaCard({ item, index }: { item: HomeMediaItem; index: number }) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
 
         <div className="absolute top-4 left-4">
-          <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider">
+          <span className="px-3 py-1 bg-black/40 backdrop-blur-md border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-50">
             {item.media_types?.name || 'Media'}
           </span>
         </div>
@@ -195,10 +195,10 @@ function MediaCard({ item, index }: { item: HomeMediaItem; index: number }) {
       </div>
 
       <div className="p-6">
-        <div className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+        <div className="text-[10px] font-bold text-[var(--app-accent)] uppercase tracking-widest mb-2 flex items-center gap-2">
           <span>{item.categories?.name}</span>
         </div>
-        <h3 className="text-lg font-bold line-clamp-2 group-hover:text-purple-400 transition-colors">
+        <h3 className="text-lg font-bold line-clamp-2 group-hover:text-[var(--app-accent)] transition-colors">
           {item.title}
         </h3>
         <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-gray-500">

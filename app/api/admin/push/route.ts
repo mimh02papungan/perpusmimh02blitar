@@ -163,3 +163,26 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }
+
+export async function DELETE(request: NextRequest) {
+    const auth = await requireAdminSession(request);
+    if (!auth.ok) return auth.response as NextResponse;
+
+    const prismaWithPush = prisma as typeof prisma & {
+        push_notifications?: {
+            deleteMany: (args?: object) => Promise<{ count: number }>;
+        };
+    };
+
+    try {
+        if (!prismaWithPush.push_notifications) {
+            return NextResponse.json({ success: true, data: { deleted: 0 } });
+        }
+
+        const deleted = await prismaWithPush.push_notifications.deleteMany();
+        return NextResponse.json({ success: true, data: { deleted: deleted.count } });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
+    }
+}

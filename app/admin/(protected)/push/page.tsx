@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AlertCircle, BellRing, CheckCircle, Send } from 'lucide-react';
+import { AlertCircle, BellRing, CheckCircle, Send, Trash2 } from 'lucide-react';
 
 interface PushSummary {
     configured: boolean;
@@ -22,6 +22,7 @@ interface PushSummary {
 export default function PushPage() {
     const [summary, setSummary] = useState<PushSummary | null>(null);
     const [loading, setLoading] = useState(false);
+    const [clearingHistory, setClearingHistory] = useState(false);
     const [initialLoading, setInitialLoading] = useState(true);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [form, setForm] = useState({
@@ -72,6 +73,33 @@ export default function PushPage() {
             showError(error instanceof Error ? error.message : 'Gagal mengirim push notification');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleClearHistory = async () => {
+        if (!summary?.recentNotifications?.length) return;
+        if (
+            !confirm(
+                'Apakah Anda yakin ingin menghapus seluruh riwayat broadcast?\n\nTindakan ini tidak dapat dibatalkan.'
+            )
+        ) {
+            return;
+        }
+
+        setClearingHistory(true);
+        setMessage(null);
+        try {
+            const res = await fetch('/api/admin/push', { method: 'DELETE' });
+            const json = await res.json();
+            if (!res.ok || !json.success) {
+                throw new Error(json.error || 'Gagal menghapus riwayat push notification');
+            }
+            showSuccess(`Riwayat broadcast dihapus: ${Number(json.data?.deleted || 0)} item`);
+            await fetchSummary();
+        } catch (error: unknown) {
+            showError(error instanceof Error ? error.message : 'Gagal menghapus riwayat push notification');
+        } finally {
+            setClearingHistory(false);
         }
     };
 
@@ -171,7 +199,19 @@ export default function PushPage() {
             </div>
 
             <div className="bg-[#1a1a1a] border border-white/5 rounded-xl p-6">
-                <h3 className="text-lg font-bold mb-4">Riwayat Broadcast Terbaru</h3>
+                <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
+                    <h3 className="text-lg font-bold">Riwayat Broadcast Terbaru</h3>
+                    <button
+                        type="button"
+                        onClick={handleClearHistory}
+                        disabled={clearingHistory || !summary?.recentNotifications?.length}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:hover:bg-white/10 transition-colors text-sm"
+                        title="Hapus seluruh riwayat broadcast"
+                    >
+                        <Trash2 size={16} className="text-red-400" />
+                        <span>{clearingHistory ? 'Menghapus...' : 'Hapus Seluruh Riwayat'}</span>
+                    </button>
+                </div>
                 {!summary?.recentNotifications?.length ? (
                     <p className="text-sm text-gray-400">Belum ada riwayat push notification.</p>
                 ) : (

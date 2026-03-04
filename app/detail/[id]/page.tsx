@@ -138,7 +138,7 @@ export default function DetailPage() {
                         {/* Title & Description */}
                         <div>
                             <h1 className="text-2xl font-bold mb-3">{data.title}</h1>
-                            <p className="text-gray-400 text-sm leading-relaxed">
+                            <p className="text-gray-400 text-sm leading-relaxed text-justify">
                                 {data.description}
                             </p>
                         </div>
@@ -146,17 +146,17 @@ export default function DetailPage() {
                         {/* Meta Info */}
                         <div className="space-y-3 text-sm">
                             <div className="flex items-center gap-3 text-gray-400">
-                                <Tag size={16} className="text-purple-400" />
+                                <Tag size={16} className="text-[var(--app-accent)]" />
                                 <span>
                                     {data.categories?.name}
                                 </span>
                             </div>
                             <div className="flex items-center gap-3 text-gray-400">
-                                <BookOpen size={16} className="text-purple-400" />
+                                <BookOpen size={16} className="text-[var(--app-accent)]" />
                                 <span>{data.levels?.name}</span>
                             </div>
                             <div className="flex items-center gap-3 text-gray-400">
-                                <Calendar size={16} className="text-purple-400" />
+                                <Calendar size={16} className="text-[var(--app-accent)]" />
                                 <span>{formatDate(data.created_at)}</span>
                             </div>
                         </div>

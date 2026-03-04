@@ -129,19 +129,21 @@ export default function StatisticsPage() {
                 <p className="text-gray-400">Ringkasan performa media, engagement pengguna, dan push notification.</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {summaryCards.map((card) => (
-                    <div key={card.label} className="bg-[#1a1a1a] border border-white/5 p-6 rounded-2xl">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`p-3 rounded-xl ${card.iconBg}`}>{card.icon}</div>
+                    <div key={card.label} className="bg-[#1a1a1a] border border-white/5 p-4 sm:p-6 rounded-2xl">
+                        <div className="flex items-center justify-between mb-3 sm:mb-4">
+                            <div className={`p-2.5 sm:p-3 rounded-xl ${card.iconBg}`}>{card.icon}</div>
                         </div>
-                        <div className="text-3xl font-bold mb-1">{card.value.toLocaleString()}</div>
-                        <div className="text-sm text-gray-500">{card.label}</div>
+                        <div className="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1">
+                            {card.value.toLocaleString()}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-500">{card.label}</div>
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-4">
                 <MiniStatCard label="Total Views" value={stats.totals.totalViews} icon={<Eye size={16} />} />
                 <MiniStatCard label="Total Downloads" value={stats.totals.totalDownloads} icon={<Download size={16} />} />
                 <MiniStatCard label="Views Hari Ini" value={stats.totals.todayViews} icon={<Eye size={16} />} />

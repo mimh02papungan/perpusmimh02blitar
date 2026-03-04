@@ -40,6 +40,17 @@ function parseNonNegativeInt(value: unknown): number | null {
     return null;
 }
 
+function parsePositiveInt(value: unknown): number | null {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value > 0 ? Math.floor(value) : null;
+    }
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number.parseInt(value, 10);
+        if (Number.isFinite(parsed) && parsed > 0) return parsed;
+    }
+    return null;
+}
+
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -54,6 +65,7 @@ export async function PUT(
         const existing = await prisma.learning_media.findUnique({
             where: { id: mediaId },
             select: {
+                file_url: true,
                 file_object_id: true,
                 thumbnail_object_id: true,
                 source_type: true,
@@ -68,11 +80,47 @@ export async function PUT(
         }
 
         const data: Record<string, unknown> = { updated_at: new Date() };
-        if (json.title !== undefined) data.title = String(json.title || '').trim();
+        if (json.title !== undefined) {
+            const nextTitle = String(json.title || '').trim();
+            if (!nextTitle) {
+                return NextResponse.json(
+                    { success: false, error: 'Judul wajib diisi' },
+                    { status: 400 }
+                );
+            }
+            data.title = nextTitle;
+        }
         if (json.description !== undefined) data.description = json.description ? String(json.description) : null;
-        if (json.category_id !== undefined) data.category_id = Number(json.category_id);
-        if (json.level_id !== undefined) data.level_id = Number(json.level_id);
-        if (json.media_type_id !== undefined) data.media_type_id = Number(json.media_type_id);
+        if (json.category_id !== undefined) {
+            const parsed = parsePositiveInt(json.category_id);
+            if (parsed === null) {
+                return NextResponse.json(
+                    { success: false, error: 'Kategori tidak valid' },
+                    { status: 400 }
+                );
+            }
+            data.category_id = parsed;
+        }
+        if (json.level_id !== undefined) {
+            const parsed = parsePositiveInt(json.level_id);
+            if (parsed === null) {
+                return NextResponse.json(
+                    { success: false, error: 'Tingkatan tidak valid' },
+                    { status: 400 }
+                );
+            }
+            data.level_id = parsed;
+        }
+        if (json.media_type_id !== undefined) {
+            const parsed = parsePositiveInt(json.media_type_id);
+            if (parsed === null) {
+                return NextResponse.json(
+                    { success: false, error: 'Jenis media tidak valid' },
+                    { status: 400 }
+                );
+            }
+            data.media_type_id = parsed;
+        }
         if (json.view_count !== undefined) {
             const parsedViewCount = parseNonNegativeInt(json.view_count);
             if (parsedViewCount === null) {
@@ -149,7 +197,9 @@ export async function PUT(
         let nextExternalUrl =
             json.external_url !== undefined
                 ? String(json.external_url || '').trim()
-                : (existing.external_url || '');
+                : (nextSourceType === 'link'
+                    ? (existing.external_url || existing.file_url || '')
+                    : (existing.external_url || ''));
 
         if (json.external_url !== undefined) {
             if (!nextExternalUrl) {
@@ -189,7 +239,8 @@ export async function PUT(
             data.file_url = nextExternalUrl;
         } else {
             data.external_url = null;
-            if (existing.file_object_id === null && data.file_object_id === undefined) {
+            const hasExistingFile = Boolean(existing.file_object_id) || Boolean(existing.file_url);
+            if (!hasExistingFile && data.file_object_id === undefined) {
                 return NextResponse.json(
                     { success: false, error: 'File utama wajib diisi untuk media bertipe file' },
                     { status: 400 }
@@ -234,6 +285,14 @@ export async function PUT(
 
         return NextResponse.json({ success: true, data: mapMediaWithStorageUrls(updated) });
     } catch (error: unknown) {
+        const code = (error as { code?: string } | null)?.code;
+        if (code === 'P2025') {
+            return NextResponse.json({
+                success: true,
+                alreadyDeleted: true,
+                message: 'Media sudah terhapus',
+            });
+        }
         const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
@@ -248,8 +307,16 @@ export async function DELETE(
 
     const { id } = await params;
     try {
+        const mediaId = Number.parseInt(id, 10);
+        if (!Number.isInteger(mediaId) || mediaId <= 0) {
+            return NextResponse.json(
+                { success: false, error: 'ID media tidak valid' },
+                { status: 400 }
+            );
+        }
+
         const media = await prisma.learning_media.findUnique({
-            where: { id: Number(id) },
+            where: { id: mediaId },
             select: {
                 id: true,
                 file_object_id: true,
@@ -258,11 +325,16 @@ export async function DELETE(
         });
 
         if (!media) {
-            return NextResponse.json({ success: false, error: 'Media not found' }, { status: 404 });
+            // Idempotent delete: treat missing row as already deleted (helps stale UI / concurrent delete).
+            return NextResponse.json({
+                success: true,
+                alreadyDeleted: true,
+                message: 'Media sudah terhapus',
+            });
         }
 
         await prisma.learning_media.delete({
-            where: { id: Number(id) },
+            where: { id: mediaId },
         });
 
         await cleanupStorageObjectIfUnused(media.file_object_id);

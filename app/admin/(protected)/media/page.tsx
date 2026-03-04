@@ -70,11 +70,14 @@ export default function MediaPage() {
 
         try {
             const res = await fetch(`/api/admin/media/${id}`, { method: 'DELETE' });
-            if (res.ok) {
+            // Defensive: treat 404 as already deleted (stale UI / concurrent delete).
+            if (res.ok || res.status === 404) {
                 fetchMedia();
-            } else {
-                alert('Gagal menghapus media');
+                return;
             }
+
+            const json = await res.json().catch(() => null);
+            alert(json?.error || 'Gagal menghapus media');
         } catch (error) {
             console.error('Delete error', error);
         }

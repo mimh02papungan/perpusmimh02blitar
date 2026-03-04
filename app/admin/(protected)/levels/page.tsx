@@ -77,11 +77,14 @@ export default function LevelsPage() {
 
         try {
             const res = await fetch(`/api/admin/levels/${id}`, { method: 'DELETE' });
-            if (res.ok) {
+            // Defensive: treat 404 as already deleted (stale UI / concurrent delete).
+            if (res.ok || res.status === 404) {
                 fetchLevels();
-            } else {
-                alert('Gagal menghapus tingkatan');
+                return;
             }
+
+            const json = await res.json().catch(() => null);
+            alert(json?.error || 'Gagal menghapus tingkatan');
         } catch (error) {
             console.error('Delete error:', error);
         }

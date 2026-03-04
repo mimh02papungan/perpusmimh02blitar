@@ -133,13 +133,14 @@ export default function SettingsPage() {
     }, [activeTab]);
 
     const uploadFile = async (file: File, folder: string): Promise<UploadResult> => {
-        const payload = new FormData();
-        payload.append('file', file);
-        payload.append('folder', folder);
-
         const res = await fetch('/api/admin/upload', {
             method: 'POST',
-            body: payload,
+            headers: {
+                'Content-Type': file.type || 'application/octet-stream',
+                'x-upload-folder': folder,
+                'x-upload-filename': encodeURIComponent(file.name || 'file.bin'),
+            },
+            body: file,
         });
         const json = await res.json();
         if (!res.ok || !json.success) {
@@ -297,8 +298,21 @@ export default function SettingsPage() {
                             <UploadCard
                                 label="Favicon"
                                 preview={faviconPreview}
-                                onFileChange={setFaviconFile}
-                                hint="Dipakai di tab browser."
+                                accept=".ico,image/x-icon,image/vnd.microsoft.icon"
+                                onFileChange={(file) => {
+                                    if (!file) {
+                                        setFaviconFile(null);
+                                        return;
+                                    }
+                                    const filename = file.name.toLowerCase();
+                                    if (!filename.endsWith('.ico')) {
+                                        showError('Favicon harus berformat .ico');
+                                        setFaviconFile(null);
+                                        return;
+                                    }
+                                    setFaviconFile(file);
+                                }}
+                                hint="Dipakai di tab browser. Wajib berformat .ico."
                             />
                             <UploadCard
                                 label="OG Image"
@@ -501,11 +515,13 @@ function UploadCard({
     preview,
     onFileChange,
     hint,
+    accept,
 }: {
     label: string;
     preview: string | null;
     onFileChange: (file: File | null) => void;
     hint: string;
+    accept?: string;
 }) {
     return (
         <div className="p-4 rounded-xl border border-white/10 bg-white/5">
@@ -522,7 +538,7 @@ function UploadCard({
                 Upload
                 <input
                     type="file"
-                    accept="image/*"
+                    accept={accept || 'image/*'}
                     className="hidden"
                     onChange={(e) => onFileChange(e.target.files?.[0] || null)}
                 />

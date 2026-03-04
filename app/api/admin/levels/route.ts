@@ -35,6 +35,13 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true, data });
     } catch (error: unknown) {
+        const code = (error as { code?: string } | null)?.code;
+        if (code === 'P2002') {
+            return NextResponse.json(
+                { success: false, error: 'Nama tingkatan sudah ada' },
+                { status: 409 }
+            );
+        }
         const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }

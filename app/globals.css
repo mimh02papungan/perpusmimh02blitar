@@ -18,6 +18,9 @@
   --app-select-border: rgba(255, 255, 255, 0.14);
   --app-select-option-bg: #0f172a;
   --app-select-option-text: #e2e8f0;
+  --app-accent: #c084fc;
+  --app-accent-strong: #a855f7;
+  --app-accent-soft: rgba(168, 85, 247, 0.18);
 }
 
 :root.light {
@@ -37,6 +40,9 @@
   --app-select-border: rgba(15, 23, 42, 0.18);
   --app-select-option-bg: #f8fafc;
   --app-select-option-text: #0f172a;
+  --app-accent: #6d28d9;
+  --app-accent-strong: #7c3aed;
+  --app-accent-soft: rgba(109, 40, 217, 0.14);
 }
 
 :root.dark {

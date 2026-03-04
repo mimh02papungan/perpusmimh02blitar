@@ -114,17 +114,19 @@ export default async function AdminDashboard() {
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-8">
                 {stats.map((stat) => (
                     <div
                         key={stat.label}
-                        className="bg-[#1a1a1a] border border-white/5 p-6 rounded-2xl hover:border-white/10 transition-all"
+                        className="bg-[#1a1a1a] border border-white/5 p-4 sm:p-6 rounded-2xl hover:border-white/10 transition-all"
                     >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`p-3 rounded-xl ${stat.iconBg}`}>{stat.icon}</div>
+                        <div className="flex items-center justify-between mb-3 sm:mb-4">
+                            <div className={`p-2.5 sm:p-3 rounded-xl ${stat.iconBg}`}>{stat.icon}</div>
                         </div>
-                        <div className="text-3xl font-bold mb-1">{stat.value.toLocaleString()}</div>
-                        <div className="text-sm text-gray-500">{stat.label}</div>
+                        <div className="text-2xl sm:text-3xl font-bold mb-0.5 sm:mb-1">
+                            {stat.value.toLocaleString()}
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-500">{stat.label}</div>
                     </div>
                 ))}
             </div>

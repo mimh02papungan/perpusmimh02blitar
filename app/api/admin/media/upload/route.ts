@@ -5,7 +5,6 @@ import { buildStorageObjectAccessPath, uploadObjectToR2 } from '@/lib/r2';
 import { assertStorageQuota, createStorageObject } from '@/lib/storageObjects';
 import { notifyNewPublicMedia } from '@/lib/webPush';
 
-const MAX_UPLOAD_SIZE = 500 * 1024 * 1024;
 const MAX_PINNED_MEDIA = 6;
 
 function toPositiveInt(value: FormDataEntryValue | null): number | null {
@@ -52,13 +51,6 @@ export async function POST(request: NextRequest) {
         if (!title || !categoryId || !mediaTypeId || !levelId) {
             return NextResponse.json(
                 { success: false, error: 'Missing required fields' },
-                { status: 400 }
-            );
-        }
-
-        if (thumbnailFile && thumbnailFile.size > MAX_UPLOAD_SIZE) {
-            return NextResponse.json(
-                { success: false, error: 'Ukuran thumbnail melebihi batas 500MB' },
                 { status: 400 }
             );
         }
@@ -163,13 +155,6 @@ export async function POST(request: NextRequest) {
 
         if (!(file instanceof File)) {
             return NextResponse.json({ success: false, error: 'File is required' }, { status: 400 });
-        }
-
-        if (file.size > MAX_UPLOAD_SIZE) {
-            return NextResponse.json(
-                { success: false, error: 'Ukuran file melebihi batas 500MB' },
-                { status: 400 }
-            );
         }
 
         await assertStorageQuota(file.size + (thumbnailFile?.size || 0));

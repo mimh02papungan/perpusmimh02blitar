@@ -84,7 +84,7 @@ export default function MediaListPage() {
           </motion.h1>
           
           <div className="relative max-w-2xl mx-auto">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-purple-400" size={22} />
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--app-accent)]" size={22} />
             <input 
               type="text"
               placeholder="Cari materi pembelajaran (contoh: Matematika)..."
@@ -130,12 +130,12 @@ export default function MediaListPage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-6">
-                      <span className="text-sm font-bold bg-white/20 backdrop-blur px-4 py-2 rounded-full">
+                      <span className="text-sm font-bold bg-white/20 backdrop-blur px-4 py-2 rounded-full text-slate-50">
                         Lihat Detail
                       </span>
                     </div>
                     <div className="absolute top-3 right-3">
-                      <span className="bg-purple-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      <span className="bg-purple-600 text-slate-50 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                         {item.media_types?.icon} {item.media_types?.name}
                       </span>
                     </div>
@@ -143,7 +143,7 @@ export default function MediaListPage() {
 
                   <div className="p-6">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase">
+                      <span className="bg-[var(--app-accent-soft)] text-[var(--app-accent)] text-[10px] font-bold px-3 py-1 rounded-full uppercase">
                         {item.categories?.name}
                       </span>
                       <span className="text-gray-500 text-[10px]">•</span>
@@ -152,11 +152,11 @@ export default function MediaListPage() {
                       </span>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-purple-400 transition-colors line-clamp-1">
+                    <h3 className="text-xl font-bold mb-3 group-hover:text-[var(--app-accent)] transition-colors line-clamp-1">
                       {item.title}
                     </h3>
                     
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-5">
+                    <p className="text-gray-500 text-sm text-justify line-clamp-2 mb-5">
                       {item.description}
                     </p>
 

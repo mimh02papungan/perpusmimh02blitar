@@ -3,16 +3,61 @@ import { requireAdminSession } from '@/lib/auth';
 import { uploadObjectToR2 } from '@/lib/r2';
 import { assertStorageQuota, createStorageObject, mapStorageObject } from '@/lib/storageObjects';
 
-const MAX_UPLOAD_SIZE = 500 * 1024 * 1024;
+function decodeHeaderValue(value: string): string {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return value;
+    }
+}
 
 export async function POST(request: NextRequest) {
     const auth = await requireAdminSession(request);
     if (!auth.ok) return auth.response as NextResponse;
 
     try {
-        const formData = await request.formData();
-        const file = formData.get('file');
-        const folder = String(formData.get('folder') || formData.get('path') || 'uploads');
+        const contentType = String(request.headers.get('content-type') || '');
+        const isMultipart = contentType.toLowerCase().includes('multipart/form-data');
+
+        let folder = 'uploads';
+        let filename = 'file.bin';
+        let mimeType: string | null = null;
+        let buffer: Buffer | null = null;
+
+        if (isMultipart) {
+            const formData = await request.formData();
+            const file = formData.get('file');
+            folder = String(formData.get('folder') || formData.get('path') || 'uploads');
+
+            if (!(file instanceof File)) {
+                return NextResponse.json(
+                    { success: false, error: 'File is required' },
+                    { status: 400 }
+                );
+            }
+
+            filename = String(file.name || filename);
+            mimeType = file.type || null;
+            buffer = Buffer.from(await file.arrayBuffer());
+        } else {
+            // Raw upload mode: Body is binary file, metadata via headers.
+            // This avoids multipart parsing issues in some environments.
+            folder = String(
+                request.headers.get('x-upload-folder') ||
+                    request.headers.get('x-folder') ||
+                    'uploads'
+            );
+            const encodedFilename = String(
+                request.headers.get('x-upload-filename') ||
+                    request.headers.get('x-filename') ||
+                    filename
+            );
+            filename = decodeHeaderValue(encodedFilename) || filename;
+            mimeType = contentType || null;
+
+            const arrayBuffer = await request.arrayBuffer();
+            buffer = Buffer.from(arrayBuffer);
+        }
 
         const normalizedFolder = folder.toLowerCase().replace(/\\/g, '/').split('/')[0];
         const superadminOnlyFolders = new Set(['logo', 'favicon', 'ogimage']);
@@ -23,35 +68,36 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (!(file instanceof File)) {
+        if (normalizedFolder === 'favicon') {
+            const lower = String(filename || '').toLowerCase();
+            if (!lower.endsWith('.ico')) {
+                return NextResponse.json(
+                    { success: false, error: 'Favicon harus berformat .ico' },
+                    { status: 400 }
+                );
+            }
+        }
+
+        if (!buffer) {
             return NextResponse.json(
                 { success: false, error: 'File is required' },
                 { status: 400 }
             );
         }
 
-        if (file.size > MAX_UPLOAD_SIZE) {
-            return NextResponse.json(
-                { success: false, error: 'Ukuran file melebihi batas 500MB' },
-                { status: 400 }
-            );
-        }
-
-        await assertStorageQuota(file.size);
-
-        const arrayBuffer = await file.arrayBuffer();
+        await assertStorageQuota(buffer.length);
         const upload = await uploadObjectToR2({
-            data: Buffer.from(arrayBuffer),
-            contentType: file.type || undefined,
+            data: buffer,
+            contentType: mimeType || undefined,
             folder,
-            filename: file.name,
+            filename,
         });
 
         const storageObject = await createStorageObject({
             bucket: upload.bucket,
             objectKey: upload.objectKey,
-            mimeType: file.type || null,
-            sizeBytes: file.size,
+            mimeType: mimeType || null,
+            sizeBytes: buffer.length,
             etag: upload.etag,
             isPublic: false,
         });

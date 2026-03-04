@@ -57,13 +57,14 @@ export default function ProfilePage() {
     const uploadPhotoIfNeeded = async (): Promise<string | null | undefined> => {
         if (!photoFile) return undefined;
 
-        const payload = new FormData();
-        payload.append('file', photoFile);
-        payload.append('folder', 'admins');
-
         const res = await fetch('/api/admin/upload', {
             method: 'POST',
-            body: payload,
+            headers: {
+                'Content-Type': photoFile.type || 'application/octet-stream',
+                'x-upload-folder': 'admins',
+                'x-upload-filename': encodeURIComponent(photoFile.name || 'photo.bin'),
+            },
+            body: photoFile,
         });
         const json = await res.json();
 

@@ -37,6 +37,42 @@ function parseUrl(value: string | undefined): URL | undefined {
   }
 }
 
+// In dev, an old PWA service worker can cache Turbopack bundles and cause persistent hydration mismatches
+// (server HTML from new code, client JS from cached old code). Kill SW + caches once, then reload.
+const SW_DEV_KILL_SCRIPT =
+  process.env.NODE_ENV === 'development' && process.env.NEXT_PUBLIC_ENABLE_PWA_DEV !== 'true'
+    ? `
+(() => {
+  try {
+    if (!('serviceWorker' in navigator)) return;
+    if (window.__perpusSwDevKilled) return;
+    window.__perpusSwDevKilled = true;
+
+    const key = '__perpusSwDevKilledOnce';
+    try {
+      if (sessionStorage.getItem(key) === '1') return;
+    } catch {}
+
+    if (!navigator.serviceWorker.controller) return;
+
+    Promise.resolve()
+      .then(() => navigator.serviceWorker.getRegistrations())
+      .then((registrations) => Promise.all(registrations.map((reg) => reg.unregister())))
+      .then(() => {
+        if (!('caches' in window)) return;
+        return caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k))));
+      })
+      .finally(() => {
+        try {
+          sessionStorage.setItem(key, '1');
+        } catch {}
+        window.location.reload();
+      });
+  } catch {}
+})();
+`
+    : '';
+
 const THEME_INIT_SCRIPT = `
 (() => {
   try {
@@ -132,6 +168,11 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <head>
+        {SW_DEV_KILL_SCRIPT ? (
+          <Script id="sw-dev-kill" strategy="beforeInteractive">
+            {SW_DEV_KILL_SCRIPT}
+          </Script>
+        ) : null}
         <Script id="theme-init" strategy="beforeInteractive">
           {THEME_INIT_SCRIPT}
         </Script>

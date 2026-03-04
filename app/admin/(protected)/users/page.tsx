@@ -80,13 +80,14 @@ export default function AdminUsersPage() {
             let fotoObjectId = formData.foto_object_id;
 
             if (photoFile) {
-                const uploadData = new FormData();
-                uploadData.append('file', photoFile);
-                uploadData.append('folder', 'admins');
-
                 const uploadRes = await fetch('/api/admin/upload', {
                     method: 'POST',
-                    body: uploadData,
+                    headers: {
+                        'Content-Type': photoFile.type || 'application/octet-stream',
+                        'x-upload-folder': 'admins',
+                        'x-upload-filename': encodeURIComponent(photoFile.name || 'photo.bin'),
+                    },
+                    body: photoFile,
                 });
                 const uploadJson = await uploadRes.json();
                 if (!uploadRes.ok || !uploadJson.success) {

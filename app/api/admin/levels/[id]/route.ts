@@ -12,6 +12,14 @@ export async function PUT(
 
     const { id } = await params;
     try {
+        const levelId = Number.parseInt(id, 10);
+        if (!Number.isInteger(levelId) || levelId <= 0) {
+            return NextResponse.json(
+                { success: false, error: 'ID tingkatan tidak valid' },
+                { status: 400 }
+            );
+        }
+
         const json = await request.json();
         const name = String(json?.name || '').trim();
 
@@ -20,12 +28,25 @@ export async function PUT(
         }
 
         const data = await prisma.levels.update({
-            where: { id: Number(id) },
+            where: { id: levelId },
             data: { name },
         });
 
         return NextResponse.json({ success: true, data });
     } catch (error: unknown) {
+        const code = (error as { code?: string } | null)?.code;
+        if (code === 'P2002') {
+            return NextResponse.json(
+                { success: false, error: 'Nama tingkatan sudah ada' },
+                { status: 409 }
+            );
+        }
+        if (code === 'P2025') {
+            return NextResponse.json(
+                { success: false, error: 'Tingkatan tidak ditemukan' },
+                { status: 404 }
+            );
+        }
         const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
@@ -53,10 +74,12 @@ export async function DELETE(
             select: { id: true, name: true },
         });
         if (!exists) {
-            return NextResponse.json(
-                { success: false, error: 'Tingkatan tidak ditemukan' },
-                { status: 404 }
-            );
+            // Idempotent delete: treat missing row as already deleted (helps stale UI / concurrent delete).
+            return NextResponse.json({
+                success: true,
+                alreadyDeleted: true,
+                message: 'Tingkatan sudah terhapus',
+            });
         }
 
         const childMedia = await prisma.learning_media.findMany({
@@ -93,6 +116,14 @@ export async function DELETE(
             message: `Tingkatan "${exists.name}" dihapus. ${childMedia.length} media turunan ikut dihapus.`,
         });
     } catch (error: unknown) {
+        const code = (error as { code?: string } | null)?.code;
+        if (code === 'P2025') {
+            return NextResponse.json({
+                success: true,
+                alreadyDeleted: true,
+                message: 'Tingkatan sudah terhapus',
+            });
+        }
         const message = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
