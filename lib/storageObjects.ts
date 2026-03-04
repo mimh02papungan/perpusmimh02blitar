@@ -161,10 +161,6 @@ export async function forceDeleteStorageObject(objectId: bigint | number | strin
 
     if (!object) return;
 
-    await deleteObjectFromR2(object.bucket, object.object_key).catch(() => {
-        // Forced delete ignores remote not-found / credentials errors.
-    });
-
     const usageCount =
         object._count.admins_foto_object +
         object._count.institutions_favicon_object +
@@ -174,6 +170,10 @@ export async function forceDeleteStorageObject(objectId: bigint | number | strin
         object._count.learning_media_thumbnail_object;
 
     if (usageCount > 0) return;
+
+    await deleteObjectFromR2(object.bucket, object.object_key).catch(() => {
+        // Forced delete ignores remote not-found / credentials errors.
+    });
 
     await prisma.storage_objects.delete({
         where: { id: parsedId },

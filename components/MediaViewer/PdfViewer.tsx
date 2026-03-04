@@ -79,7 +79,7 @@ export default function PdfViewer({ fileUrl, title, scrollMode = 'vertical' }: P
                         {title || 'PDF'}
                     </span>
                     {numPages > 0 && (
-                        <span className="text-[11px] text-gray-400">
+                        <span className="text-[11px] text-slate-200/80">
                             {currentPage}/{numPages}
                         </span>
                     )}
@@ -126,7 +126,7 @@ export default function PdfViewer({ fileUrl, title, scrollMode = 'vertical' }: P
                     key={resolvedFileUrl}
                     file={resolvedFileUrl}
                     loading={
-                        <div className="h-full min-h-[240px] flex items-center justify-center text-gray-300 gap-2">
+                        <div className="h-full min-h-[240px] flex items-center justify-center text-slate-200 gap-2">
                             <Loader2 className="w-5 h-5 animate-spin" />
                             <span className="text-sm">Memuat dokumen...</span>
                         </div>
@@ -185,7 +185,7 @@ export default function PdfViewer({ fileUrl, title, scrollMode = 'vertical' }: P
                         <ChevronLeft size={14} />
                         Prev
                     </button>
-                    <span className="text-xs text-gray-300 min-w-[70px] text-center">
+                    <span className="text-xs text-slate-200 min-w-[70px] text-center">
                         Hal. {currentPage} / {numPages}
                     </span>
                     <button

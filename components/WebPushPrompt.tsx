@@ -138,7 +138,7 @@ export default function WebPushPrompt() {
                 type="button"
                 onClick={unsubscribe}
                 disabled={loading}
-                className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-4 py-2 text-xs text-white backdrop-blur disabled:opacity-50"
+                className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/75 px-4 py-2 text-xs text-slate-50 backdrop-blur disabled:opacity-50"
                 title="Matikan notifikasi"
             >
                 <BellOff size={14} />
@@ -154,7 +154,7 @@ export default function WebPushPrompt() {
             type="button"
             onClick={subscribe}
             disabled={loading}
-            className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/15 bg-purple-600 px-4 py-2 text-xs font-medium text-white shadow-lg shadow-purple-900/30 disabled:opacity-50"
+            className="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full border border-white/15 bg-purple-600 px-4 py-2 text-xs font-medium text-slate-50 shadow-lg shadow-purple-900/30 disabled:opacity-50"
         >
             <Bell size={14} />
             <span>{loading ? 'Memproses...' : 'Aktifkan Notifikasi'}</span>

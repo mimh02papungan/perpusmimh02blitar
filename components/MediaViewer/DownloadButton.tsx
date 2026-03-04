@@ -68,7 +68,7 @@ export default function DownloadButton({
                     : status === 'error'
                         ? 'bg-red-600 hover:bg-red-700'
                         : 'bg-purple-600 hover:bg-purple-700 shadow-lg shadow-purple-500/20'
-                } disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+                } text-slate-50 disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
         >
             {isDownloading ? (
                 <>

@@ -103,13 +103,14 @@ export default function MediaForm({ initialData, onSuccess, onCancel }: MediaFor
     }, [initialData]);
 
     const uploadFileObject = async (selectedFile: File, folder: 'media' | 'thumbnails') => {
-        const uploadForm = new FormData();
-        uploadForm.append('file', selectedFile);
-        uploadForm.append('folder', folder);
-
         const uploadRes = await fetch('/api/admin/upload', {
             method: 'POST',
-            body: uploadForm,
+            headers: {
+                'Content-Type': selectedFile.type || 'application/octet-stream',
+                'x-upload-folder': folder,
+                'x-upload-filename': encodeURIComponent(selectedFile.name || 'file.bin'),
+            },
+            body: selectedFile,
         });
         const uploadJson = await uploadRes.json();
 
@@ -206,32 +207,38 @@ export default function MediaForm({ initialData, onSuccess, onCancel }: MediaFor
                     throw new Error('Thumbnail/foto wajib diunggah untuk media bertipe link');
                 }
 
-                const data = new FormData();
-                data.append('title', formData.title);
-                data.append('description', formData.description);
-                data.append('category_id', formData.category_id);
-                data.append('level_id', formData.level_id);
-                data.append('media_type_id', formData.media_type);
-                data.append('visibility', formData.visibility);
-                data.append('source_type', isLinkMode ? 'link' : 'file');
-                data.append('external_url', isLinkMode ? formData.external_url.trim() : '');
-                data.append('is_pinned', formData.is_pinned ? 'true' : 'false');
+                const fileObjectId = !isLinkMode && file
+                    ? await uploadFileObject(file, 'media')
+                    : null;
 
-                if (!isLinkMode && file) {
-                    data.append('file', file);
-                }
+                const thumbnailObjectId = thumbnail
+                    ? await uploadFileObject(thumbnail, 'thumbnails')
+                    : fileObjectId;
 
-                if (thumbnail) {
-                    data.append('thumbnail', thumbnail);
-                }
+                const createBody: Record<string, unknown> = {
+                    title: formData.title,
+                    description: formData.description,
+                    category_id: Number.parseInt(formData.category_id, 10),
+                    level_id: Number.parseInt(formData.level_id, 10),
+                    media_type_id: Number.parseInt(formData.media_type, 10),
+                    visibility: formData.visibility,
+                    source_type: isLinkMode ? 'link' : 'file',
+                    external_url: isLinkMode ? formData.external_url.trim() : null,
+                    is_pinned: formData.is_pinned,
+                    file_object_id: fileObjectId,
+                    thumbnail_object_id: thumbnailObjectId,
+                };
 
-                const res = await fetch('/api/admin/media/upload', {
+                const res = await fetch('/api/admin/media', {
                     method: 'POST',
-                    body: data,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(createBody),
                 });
 
-                const json = await res.json();
-                if (!json.success) throw new Error(json.message || json.error || 'Upload gagal');
+                if (!res.ok) {
+                    const json = await res.json().catch(() => null);
+                    throw new Error(json?.error || 'Upload gagal');
+                }
             }
 
             onSuccess();
@@ -406,7 +413,7 @@ export default function MediaForm({ initialData, onSuccess, onCancel }: MediaFor
                                 : 'Upload File Media *'}
                     </p>
                     <p className="text-xs text-gray-500 mb-3">
-                        Video, Foto, PDF, Excel, DOC, ZIP (Max 500MB)
+                        Video, Foto, PDF, Excel, DOC, ZIP
                     </p>
                     <input
                         type="file"

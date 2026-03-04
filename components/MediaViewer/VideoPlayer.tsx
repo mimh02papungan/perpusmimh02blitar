@@ -135,7 +135,7 @@ export default function VideoPlayer({ fileUrl, title }: VideoPlayerProps) {
     };
 
     return (
-        <div ref={playerRef} className="w-full h-full relative bg-black overflow-hidden">
+        <div ref={playerRef} className="w-full h-full relative bg-slate-950 overflow-hidden text-slate-50">
             <video
                 ref={videoRef}
                 className="w-full h-full object-contain"

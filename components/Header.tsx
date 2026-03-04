@@ -70,7 +70,7 @@ export default function Header() {
                     />
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                      <span className="text-white text-xs">MI</span>
+                      <span className="text-slate-50 text-xs">MI</span>
                     </div>
                   )}
                 </div>

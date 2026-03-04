@@ -24,7 +24,7 @@ export default function ImageViewer({ fileUrl, title }: ImageViewerProps) {
     };
 
     return (
-        <div className="w-full h-full flex flex-col bg-black">
+        <div className="w-full h-full flex flex-col bg-slate-950 text-slate-50">
             {/* Toolbar */}
             <div className="flex items-center justify-between px-6 py-4 bg-black/80 backdrop-blur border-b border-white/10">
                 <div className="flex items-center gap-3">

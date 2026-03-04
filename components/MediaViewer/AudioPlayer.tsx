@@ -82,7 +82,7 @@ export default function AudioPlayer({ fileUrl, title }: AudioPlayerProps) {
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-black p-8">
+    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/20 to-black p-8 text-slate-50">
       <div className="w-full max-w-2xl">
         {/* Album Art Placeholder */}
         <div className="aspect-square w-64 mx-auto mb-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl flex items-center justify-center shadow-2xl">
@@ -90,7 +90,7 @@ export default function AudioPlayer({ fileUrl, title }: AudioPlayerProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-2xl font-bold text-center mb-8 text-white">{title}</h3>
+        <h3 className="text-2xl font-bold text-center mb-8 text-slate-50">{title}</h3>
 
         {/* Progress Bar */}
         <div className="mb-6">
@@ -102,7 +102,7 @@ export default function AudioPlayer({ fileUrl, title }: AudioPlayerProps) {
             onChange={handleSeek}
             className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer"
           />
-          <div className="flex justify-between text-sm text-gray-400 mt-2">
+          <div className="flex justify-between text-sm text-slate-200 mt-2">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>

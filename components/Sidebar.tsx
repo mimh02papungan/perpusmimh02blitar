@@ -101,61 +101,75 @@ export default function Sidebar() {
                     borderColor: 'var(--app-border)',
                 }}
             >
-                <div className="p-6">
-                    <Link
-                        href="/admin/profile"
-                        onClick={() => setIsOpen(false)}
-                        className="mb-6 p-4 rounded-xl border bg-[var(--app-soft)] hover:bg-[var(--app-soft-hover)] transition-all flex items-center gap-3"
-                        style={{ borderColor: 'var(--app-border)' }}
-                    >
-                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-purple-500/10 flex items-center justify-center shrink-0">
-                            {me?.foto_url ? (
-                                <img src={me.foto_url} alt={me.name || me.username} className="w-full h-full object-cover" />
-                            ) : (
-                                <Shield size={20} className="text-purple-300" />
-                            )}
-                        </div>
-                        <div className="min-w-0">
-                            <p className="font-semibold text-sm truncate">{me?.name || me?.username || 'Admin'}</p>
-                            <p className="text-xs text-[var(--app-muted)] truncate">{me?.jabatan || me?.role || 'Pengguna'}</p>
-                            <p className="text-[11px] text-purple-300 mt-0.5">{me?.role || 'ADMIN'}</p>
-                        </div>
-                    </Link>
+                <div className="flex h-full flex-col">
+                    <div className="p-6 pb-4 shrink-0">
+                        <Link
+                            href="/admin/profile"
+                            onClick={() => setIsOpen(false)}
+                            className="p-4 rounded-xl border bg-[var(--app-soft)] hover:bg-[var(--app-soft-hover)] transition-all flex items-center gap-3"
+                            style={{ borderColor: 'var(--app-border)' }}
+                        >
+                            <div className="w-12 h-12 rounded-xl overflow-hidden bg-purple-500/10 flex items-center justify-center shrink-0">
+                                {me?.foto_url ? (
+                                    <img
+                                        src={me.foto_url}
+                                        alt={me.name || me.username}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <Shield size={20} className="text-purple-300" />
+                                )}
+                            </div>
+                            <div className="min-w-0">
+                                <p className="font-semibold text-sm truncate">
+                                    {me?.name || me?.username || 'Admin'}
+                                </p>
+                                <p className="text-xs text-[var(--app-muted)] truncate">
+                                    {me?.jabatan || me?.role || 'Pengguna'}
+                                </p>
+                                <p className="text-[11px] text-purple-300 mt-0.5">
+                                    {me?.role || 'ADMIN'}
+                                </p>
+                            </div>
+                        </Link>
+                    </div>
 
-                    <nav className="space-y-2">
-                        {menuItems.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setIsOpen(false)}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                                    isActive(item.href)
-                                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/20'
-                                        : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-text)]'
-                                }`}
-                            >
-                                {item.icon}
-                                <span className="font-medium text-sm">{item.name}</span>
-                            </Link>
-                        ))}
+                    <nav className="flex-1 min-h-0 overflow-y-auto px-6 pb-6">
+                        <div className="space-y-2">
+                            {menuItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                                        isActive(item.href)
+                                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/20'
+                                            : 'text-[var(--app-muted)] hover:bg-[var(--app-soft)] hover:text-[var(--app-text)]'
+                                    }`}
+                                >
+                                    {item.icon}
+                                    <span className="font-medium text-sm">{item.name}</span>
+                                </Link>
+                            ))}
+                        </div>
                     </nav>
-                </div>
 
-                <div
-                    className="absolute bottom-0 w-full p-6 border-t"
-                    style={{
-                        background: 'var(--app-surface)',
-                        borderColor: 'var(--app-border)',
-                    }}
-                >
-                    <ThemeToggle showLabel className="w-full justify-center mb-3" />
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                    <div
+                        className="shrink-0 w-full p-6 border-t"
+                        style={{
+                            background: 'var(--app-surface)',
+                            borderColor: 'var(--app-border)',
+                        }}
                     >
-                        <LogOut size={20} />
-                        <span className="font-medium text-sm">Sign Out</span>
-                    </button>
+                        <ThemeToggle showLabel className="w-full justify-center mb-3" />
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all"
+                        >
+                            <LogOut size={20} />
+                            <span className="font-medium text-sm">Sign Out</span>
+                        </button>
+                    </div>
                 </div>
             </aside>
         </>

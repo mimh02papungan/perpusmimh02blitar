@@ -138,10 +138,10 @@ export default function MediaViewer({
                     );
                 default:
                     return (
-                        <div className="flex items-center justify-center h-full bg-gray-900/50 rounded-xl">
+                        <div className="flex items-center justify-center h-full bg-gray-900/50 rounded-xl text-slate-50">
                             <div className="text-center p-8">
                                 <div className="text-5xl mb-4">FILE</div>
-                                <p className="text-gray-300 mb-6">
+                                <p className="text-slate-200 mb-6">
                                     Format tidak didukung untuk preview: <strong>{mediaType}</strong>
                                 </p>
                                 <DownloadButton
@@ -158,11 +158,11 @@ export default function MediaViewer({
             const errorMessage = err instanceof Error ? err.message : 'Unknown error';
             setError(errorMessage);
             return (
-                <div className="flex items-center justify-center h-full bg-red-900/20 rounded-xl">
+                <div className="flex items-center justify-center h-full bg-red-900/20 rounded-xl text-slate-50">
                     <div className="text-center p-8">
                         <div className="text-5xl mb-4">ERROR</div>
                         <p className="text-red-400 mb-2 font-medium">Error loading media</p>
-                        <p className="text-sm text-gray-300 mb-6">{error || 'Unexpected viewer error'}</p>
+                        <p className="text-sm text-slate-200 mb-6">{error || 'Unexpected viewer error'}</p>
                         <DownloadButton
                             mediaId={mediaId}
                             fileUrl={fileUrl}
@@ -178,7 +178,7 @@ export default function MediaViewer({
     const controlsPositionClass = viewerType === 'pdf' ? 'top-14 sm:top-16 right-2 sm:right-3' : 'top-2 sm:top-3 right-2 sm:right-3';
 
     return (
-        <div ref={viewerContainerRef} className="relative w-full h-full bg-black rounded-xl overflow-hidden">
+        <div ref={viewerContainerRef} className="relative w-full h-full bg-slate-950 rounded-xl overflow-hidden">
             <div className={`absolute ${controlsPositionClass} z-30 flex flex-col sm:flex-row items-end gap-2 max-w-[calc(100%-0.75rem)]`}>
                 {supportsScrollMode && (
                     <button
@@ -186,7 +186,7 @@ export default function MediaViewer({
                         onClick={() =>
                             setScrollMode((value) => (value === 'vertical' ? 'horizontal' : 'vertical'))
                         }
-                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-black/70 border border-white/15 text-[11px] sm:text-xs text-white hover:bg-black/85 transition-colors whitespace-nowrap shrink-0"
+                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-black/70 border border-white/15 text-[11px] sm:text-xs text-slate-50 hover:bg-black/85 transition-colors whitespace-nowrap shrink-0"
                         title={scrollMode === 'vertical' ? 'Ubah ke scroll horizontal' : 'Ubah ke scroll vertical'}
                     >
                         {scrollMode === 'vertical' ? <ArrowLeftRight size={14} /> : <ArrowUpDown size={14} />}
@@ -196,7 +196,7 @@ export default function MediaViewer({
                 <button
                     type="button"
                     onClick={toggleFullscreen}
-                    className="inline-flex items-center justify-center p-2 rounded-lg bg-black/70 border border-white/15 text-white hover:bg-black/85 transition-colors shrink-0"
+                    className="inline-flex items-center justify-center p-2 rounded-lg bg-black/70 border border-white/15 text-slate-50 hover:bg-black/85 transition-colors shrink-0"
                     title={isFullscreen ? 'Keluar fullscreen' : 'Fullscreen'}
                     aria-label={isFullscreen ? 'Keluar fullscreen' : 'Fullscreen'}
                 >

@@ -39,17 +39,7 @@ export const SUPPORTED_FILE_TYPES = {
     '7z': 'application/x-7z-compressed',
 };
 
-export const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
-
 export function validateFile(file: File): { valid: boolean; error?: string } {
-    // Check file size
-    if (file.size > MAX_FILE_SIZE) {
-        return {
-            valid: false,
-            error: `Ukuran file terlalu besar. Maksimal ${MAX_FILE_SIZE / (1024 * 1024)}MB`
-        };
-    }
-
     // Check file extension
     const fileExt = file.name.split('.').pop()?.toLowerCase();
     if (!fileExt || !SUPPORTED_FILE_TYPES[fileExt as keyof typeof SUPPORTED_FILE_TYPES]) {

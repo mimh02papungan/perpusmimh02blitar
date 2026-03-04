@@ -150,19 +150,21 @@ export default function PublicBrowsePage({ mode }: { mode: BrowseMode }) {
             <Header />
 
             <main className="flex-grow pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto w-full">
-                <div className="mb-12">
+                <div className="mb-12 text-center">
                     <h1
                         className="text-4xl md:text-6xl font-bold gradient-text mb-4"
                         style={{ fontFamily: "'Playfair Display', serif" }}
                     >
                         {config.title}
                     </h1>
-                    <p className="text-gray-400 text-lg">{config.description}</p>
+                    <p className="text-gray-400 text-lg max-w-3xl mx-auto text-center md:text-justify">
+                        {config.description}
+                    </p>
                 </div>
 
                 <div className="glass-card p-6 rounded-3xl mb-12 border border-white/10">
                     <div className="flex items-center gap-3 mb-6">
-                        <Filter size={20} className="text-purple-400" />
+                        <Filter size={20} className="text-[var(--app-accent)]" />
                         <h2 className="text-xl font-bold">Filter Media</h2>
                     </div>
 
@@ -233,20 +235,22 @@ export default function PublicBrowsePage({ mode }: { mode: BrowseMode }) {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60"></div>
                                         <div className="absolute top-3 right-3">
-                                            <span className="bg-purple-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                            <span className="bg-purple-600 text-slate-50 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                                 {item.media_types.icon} {item.media_types.name}
                                             </span>
                                         </div>
                                     </div>
 
                                     <div className="p-6">
-                                        <div className="text-[10px] font-bold text-purple-400 uppercase tracking-widest mb-2">
+                                        <div className="text-[10px] font-bold text-[var(--app-accent)] uppercase tracking-widest mb-2">
                                             {item.categories.name}
                                         </div>
-                                        <h3 className="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors line-clamp-2">
+                                        <h3 className="text-xl font-bold mb-2 group-hover:text-[var(--app-accent)] transition-colors line-clamp-2">
                                             {item.title}
                                         </h3>
-                                        <p className="text-gray-400 text-sm line-clamp-2 mb-4">{item.description}</p>
+                                        <p className="text-gray-400 text-sm text-justify line-clamp-2 mb-4">
+                                            {item.description}
+                                        </p>
 
                                         <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
                                             <span className="flex items-center gap-1">
@@ -303,7 +307,7 @@ export default function PublicBrowsePage({ mode }: { mode: BrowseMode }) {
                                             }}
                                             className={`w-10 h-10 rounded-lg font-medium transition-all ${
                                                 currentPage === pageNum
-                                                    ? 'bg-purple-600 text-white'
+                                                    ? 'bg-purple-600 text-slate-50'
                                                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                                             }`}
                                         >
@@ -313,7 +317,7 @@ export default function PublicBrowsePage({ mode }: { mode: BrowseMode }) {
                                 }
                                 if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
                                     return (
-                                        <span key={pageNum} className="text-gray-600">
+                                        <span key={pageNum} className="text-gray-500">
                                             ...
                                         </span>
                                     );

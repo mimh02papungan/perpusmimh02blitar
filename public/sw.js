@@ -1,5 +1,5 @@
-const STATIC_CACHE_NAME = 'perpus-static-v1';
-const RUNTIME_CACHE_NAME = 'perpus-runtime-v1';
+const STATIC_CACHE_NAME = 'perpus-static-v2';
+const RUNTIME_CACHE_NAME = 'perpus-runtime-v2';
 const OFFLINE_URL = '/offline.html';
 const PRECACHE_ASSETS = ['/', OFFLINE_URL];
 
@@ -31,6 +31,12 @@ self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
     if (requestUrl.origin !== self.location.origin) return;
 
+    // Never cache Next.js internals or API responses.
+    // Browser caching + hashed asset URLs are sufficient, and caching here can cause stale bundles
+    // to be used for hydration (especially in dev with Turbopack).
+    if (requestUrl.pathname.startsWith('/_next/')) return;
+    if (requestUrl.pathname.startsWith('/api/')) return;
+
     if (event.request.mode === 'navigate') {
         event.respondWith(
             fetch(event.request).catch(() => caches.match(OFFLINE_URL))
@@ -44,6 +50,7 @@ self.addEventListener('fetch', (event) => {
 
             return fetch(event.request)
                 .then((networkResponse) => {
+                    if (!networkResponse || !networkResponse.ok) return networkResponse;
                     const responseClone = networkResponse.clone();
                     caches.open(RUNTIME_CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseClone);
